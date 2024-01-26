@@ -4,134 +4,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        #container {
-            position: relative;
-            width: 600px;
-            height: 50px;
-            margin: 50px auto 50px auto;
-            background-color: #eee;
-            cursor: pointer;
-        }
-
-        .slider {
-            position: absolute;
-            width: 0;
-
-            margin-top: 50px;
-            border-left: 10px solid transparent;
-            border-right: 10px solid transparent;
-            border-bottom: 20px solid #3498db;
-            cursor: grab;
-        }
-
-        .verticalLine {
-            position: absolute;
-            width: 2px;
-            height: 50px;
-            background-color: red;
-        }
-
-        #table {
-            margin-top: 20px;
-            border-collapse: collapse;
-            width: 100%;
-        }
-
-        #table th,
-        #table td {
-            border: 2px solid #ddd;
-            padding: 8px;
-            text-align: center;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
     <title>Slider</title>
 </head>
 
 <body>
 
-    <div id="container"></div>
+    <div id="container" class="container"></div>
     <table id="table">
         <thead>
             <tr>
                 <th>Slider</th>
                 <th>X-coordinate</th>
+                <th>Action</th>
             </tr>
         </thead>
         <tbody id="tableBody"></tbody>
     </table>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            let sliders = [];
-            let verticalLines = [];
-            let container = document.getElementById('container');
-            let tableBody = document.getElementById('tableBody');
-
-            container.addEventListener('dblclick', function (event) {
-                let sliderPosition = event.clientX - container.getBoundingClientRect().left - 8;
-                createSlider(sliderPosition);
-            });
-
-            function createSlider(position) {
-                let verticalLine = document.createElement('div');
-                verticalLine.className = 'verticalLine';
-                verticalLine.style.left = position + 'px';
-
-                let slider = document.createElement('div');
-                slider.className = 'slider';
-                slider.style.left = position - 8 + 'px';
-
-
-                container.appendChild(verticalLine);
-                container.appendChild(slider);
-
-                verticalLines.push(verticalLine);
-                sliders.push(slider);
-
-                let newRow = tableBody.insertRow();
-                let sliderCell = newRow.insertCell(0);
-                sliderCell.textContent = sliders.length;
-                let xCoordinateCell = newRow.insertCell(1);
-                xCoordinateCell.textContent = position;
-
-
-                let isDragging = false;
-                slider.addEventListener('mousedown', function (event) {
-                    isDragging = true;
-                    let offsetX = event.clientX - slider.getBoundingClientRect().left;
-
-                    function moveSlider(moveEvent) {
-                        if (isDragging) {
-                            let newPosition = moveEvent.clientX - container.getBoundingClientRect().left - offsetX;
-                            newPosition = Math.max(0, Math.min(container.clientWidth - slider.clientWidth, newPosition));
-                            verticalLine.style.left = newPosition + 'px';
-                            slider.style.left = newPosition - 8 + 'px';
-                            updatetable();
-                        }
-                    }
-
-                    function stopMoving() {
-                        isDragging = false;
-                        document.removeEventListener('mousemove', moveSlider);
-                        document.removeEventListener('mouseup', stopMoving);
-                    }
-
-                    document.addEventListener('mousemove', moveSlider);
-                    document.addEventListener('mouseup', stopMoving);
-                });
-
-            }
-
-            function updatetable() {
-                sliders.forEach((slider, index) => {
-                    let xCoordinateCell = tableBody.rows[index].cells[1];
-                    let position = parseFloat(slider.style.left) + 8;
-                    xCoordinateCell.textContent = position;
-                });
-            }
-        });
-    </script>
+    <script src="index.js"></script>
 </body>
 
 </html>
