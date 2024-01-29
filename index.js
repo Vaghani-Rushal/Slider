@@ -1,6 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
   let sliders = [];
-  let verticalLines = [];
   let container = document.getElementById("container");
   let tableBody = document.getElementById("tableBody");
 
@@ -12,27 +11,41 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function createSlider(position) {
     let color = getRandomColor();
-    let verticalLine = document.createElement("div");
-    verticalLine.className = "verticalLine";
-    verticalLine.style.left = position + "px";
-    verticalLine.style.backgroundColor = color;
 
-    let slider = document.createElement("div");
+    let slider = document.createElement("input");
+    slider.type = "color";
     slider.className = "slider";
     slider.style.left = position - 8 + "px";
     slider.style.borderBlockColor = color;
-
-    container.appendChild(verticalLine);
+    // console.log(slider);
+    // container.appendChild(verticalLine);
     container.appendChild(slider);
 
-    verticalLines.push(verticalLine);
+    // verticalLines.push(verticalLine);
     sliders.push(slider);
 
     updateTable();
     updateBackground();
 
+    // slider.addEventListener("mousedown", function (event) {});
+
     let isDragging = false;
     slider.addEventListener("mousedown", function (event) {
+      event.preventDefault();
+      console.log(event.button);
+
+      // console.log(sliders);
+      sliders.forEach((slider, index) => {
+        console.log(slider.style.borderBlockColor);
+      });
+      // console.log(event);
+      console.log(slider.value);
+      slider.addEventListener("change", (event) => {
+        slider.style.borderBlockColor = event.target.value;
+        updateTable();
+        updateBackground();
+      });
+
       isDragging = true;
       let offsetX = event.clientX - slider.getBoundingClientRect().left;
 
@@ -46,7 +59,7 @@ document.addEventListener("DOMContentLoaded", function () {
             0,
             Math.min(container.clientWidth - slider.clientWidth, newPosition)
           );
-          verticalLine.style.left = newPosition + "px";
+          // verticalLine.style.left = newPosition + "px";
           slider.style.left = newPosition - 8 + "px";
           updateTable();
           updateBackground();
@@ -66,11 +79,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function deleteSlider(index) {
     let slider = sliders[index - 1];
-    let verticalLine = verticalLines[index - 1];
+    // let verticalLine = verticalLines[index - 1];
     slider.remove();
-    verticalLine.remove();
+    // verticalLine.remove();
     sliders.splice(index - 1, 1);
-    verticalLines.splice(index - 1, 1);
+    // verticalLines.splice(index - 1, 1);
     updateTable();
     updateBackground();
   }
@@ -79,9 +92,9 @@ document.addEventListener("DOMContentLoaded", function () {
     sliders.sort(
       (s1, s2) => parseFloat(s1.style.left) - parseFloat(s2.style.left)
     );
-    verticalLines.sort(
-      (v1, v2) => parseFloat(v1.style.left) - parseFloat(v2.style.left)
-    );
+    // verticalLines.sort(
+    //   (v1, v2) => parseFloat(v1.style.left) - parseFloat(v2.style.left)
+    // );
 
     tableBody.innerHTML = "";
     sliders.forEach((slider, index) => {
@@ -99,6 +112,8 @@ document.addEventListener("DOMContentLoaded", function () {
         deleteSlider(newRow.rowIndex);
       });
       deleteCell.appendChild(deleteButton);
+      let colorCell = newRow.insertCell(3);
+      colorCell.textContent = slider.style.borderBlockColor;
     });
   }
 
